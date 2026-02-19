@@ -1,0 +1,291 @@
+{
+  "info": {
+    "name": "Taller de Motos – PAVAS S.A.S",
+    "description": "Coleccion completa de endpoints para el sistema de control de taller de motos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:4000" }
+  ],
+  "item": [
+
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Crear cliente",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/clients",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Perez\",\n  \"phone\": \"3001234567\",\n  \"email\": \"juan@email.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar clientes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/clients"
+          }
+        },
+        {
+          "name": "Buscar cliente por nombre",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/clients?search=Juan",
+              "query": [{ "key": "search", "value": "Juan" }]
+            }
+          }
+        },
+        {
+          "name": "Obtener cliente por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/clients/1"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Motos",
+      "item": [
+        {
+          "name": "Crear moto",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/bikes",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"MNO456\",\n  \"brand\": \"Suzuki\",\n  \"model\": \"GN 125\",\n  \"cylinder\": 125,\n  \"clientId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Buscar moto por placa",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/bikes?plate=MNO",
+              "query": [{ "key": "plate", "value": "MNO" }]
+            }
+          }
+        },
+        {
+          "name": "Obtener moto por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/bikes/1"
+          }
+        },
+        {
+          "name": "ERROR – Placa duplicada (409)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/bikes",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"ABC123\",\n  \"brand\": \"Honda\",\n  \"model\": \"CB 190R\",\n  \"clientId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "ERROR – Cliente no existe (404)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/bikes",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"ZZZ999\",\n  \"brand\": \"Yamaha\",\n  \"model\": \"R3\",\n  \"clientId\": 9999\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Ordenes de Trabajo",
+      "item": [
+        {
+          "name": "Crear orden",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/work-orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motoId\": 1,\n  \"faultDescription\": \"No arranca, revisar carburador\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Listar todas las ordenes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/work-orders"
+          }
+        },
+        {
+          "name": "Filtrar por estado",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/work-orders?status=RECIBIDA",
+              "query": [{ "key": "status", "value": "RECIBIDA" }]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por placa con paginacion",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/work-orders?plate=ABC&page=1&pageSize=5",
+              "query": [
+                { "key": "plate",    "value": "ABC" },
+                { "key": "page",     "value": "1" },
+                { "key": "pageSize", "value": "5" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalle de orden",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/work-orders/1"
+          }
+        },
+        {
+          "name": "ERROR – Moto no existe (404)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/work-orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motoId\": 9999,\n  \"faultDescription\": \"Prueba de error\"\n}"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Estados de Orden",
+      "item": [
+        {
+          "name": "Paso 1 – RECIBIDA a DIAGNOSTICO",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/work-orders/1/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"DIAGNOSTICO\"\n}" }
+          }
+        },
+        {
+          "name": "Paso 2 – DIAGNOSTICO a EN_PROCESO",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/work-orders/1/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"EN_PROCESO\"\n}" }
+          }
+        },
+        {
+          "name": "Paso 3 – EN_PROCESO a LISTA",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/work-orders/1/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"LISTA\"\n}" }
+          }
+        },
+        {
+          "name": "Paso 4 – LISTA a ENTREGADA",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/work-orders/1/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"ENTREGADA\"\n}" }
+          }
+        },
+        {
+          "name": "Cancelar orden",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/work-orders/2/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"CANCELADA\"\n}" }
+          }
+        },
+        {
+          "name": "ERROR – Transicion invalida (400)",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/work-orders/1/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"RECIBIDA\"\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Items de Orden",
+      "item": [
+        {
+          "name": "Agregar mano de obra",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/work-orders/1/items",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"MANO_OBRA\",\n  \"description\": \"Revision de motor\",\n  \"count\": 1,\n  \"unitValue\": 80000\n}"
+            }
+          }
+        },
+        {
+          "name": "Agregar repuesto",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/work-orders/1/items",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"REPUESTO\",\n  \"description\": \"Bujia NGK\",\n  \"count\": 2,\n  \"unitValue\": 15000\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar item",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/work-orders/items/1"
+          }
+        },
+        {
+          "name": "ERROR – Cantidad cero (400)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/work-orders/1/items",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"REPUESTO\",\n  \"description\": \"Prueba error\",\n  \"count\": 0,\n  \"unitValue\": 10000\n}"
+            }
+          }
+        }
+      ]
+    }
+
+  ]
+}
